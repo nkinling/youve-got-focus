@@ -1,4 +1,4 @@
-# AOL Focus — You've Got Minutes! 🌐
+# 🌐 You've Got Focus
 
 > Dial-up era Pomodoro timer for macOS. Log in. Slow down. Get work done.
 
