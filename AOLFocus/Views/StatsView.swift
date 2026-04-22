@@ -1,43 +1,43 @@
 import SwiftUI
-import AppKit
 
 struct StatsView: View {
     @EnvironmentObject var session: FocusSession
 
-    private var totalHours: Int { session.totalFocusSeconds / 3600 }
-    private var totalMins: Int { (session.totalFocusSeconds % 3600) / 60 }
+    private var totalMins: Int { session.totalFocusSeconds / 60 }
 
     var body: some View {
         VStack(spacing: 8) {
-            Win95Panel(title: "📊 Session Statistics") {
-                VStack(spacing: 0) {
-                    statRow(label: "Sessions Completed:", value: "\(session.sessionsCompleted)")
-                    statRow(label: "Total Focus Time:", value: "\(totalHours)h \(totalMins)m")
-                    statRow(label: "Average Session:", value: "\(session.statsAverageMinutes)m")
+            FocusLogoView()
+                .padding(.bottom, 4)
 
-                    Text("Keep logging in to build your streak!")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundColor(.win95Dark)
-                        .italic()
-                        .padding(.top, 8)
+            Win95Panel {
+                VStack(spacing: 0) {
+                    Text("Statistics")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.win95Blue)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.bottom, 10)
+
+                    statRow(label: "Sessions:", value: "\(session.sessionsCompleted)")
+                    statRow(label: "Average Session:", value: "\(session.statsAverageMinutes) minutes")
+                    statRow(label: "Total Focus Time:", value: "\(totalMins) minutes")
+                    statRow(label: "Focus Streak:", value: "\(session.focusStreak) days")
+
+                    Text("Keep dialing up to stay focused")
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundColor(.win95Text)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.top, 12)
                 }
             }
 
             HStack(spacing: 4) {
-                Win95Button(title: "◄ Back") {
+                Win95Button(title: "◄ BACK") {
                     session.activeScreen = session.state == .active || session.state == .paused
                         ? .session : .login
                 }
-                Win95Button(title: "🗑 Clear Stats", danger: true) {
-                    let alert = NSAlert()
-                    alert.messageText = "Clear All Statistics?"
-                    alert.informativeText = "This cannot be undone."
-                    alert.addButton(withTitle: "Clear")
-                    alert.addButton(withTitle: "Cancel")
-                    if alert.runModal() == .alertFirstButtonReturn {
-                        session.clearStats()
-                    }
+                Win95Button(title: "🗑 CLEAR", danger: true) {
+                    session.clearStats()
                 }
             }
         }
@@ -47,12 +47,13 @@ struct StatsView: View {
         HStack {
             Text(label)
                 .font(.system(size: 11, design: .monospaced))
+                .foregroundColor(.win95Text)
             Spacer()
             Text(value)
-                .font(Font.custom("VT323", size: 18).fallback("Courier New"))
+                .font(.system(size: 11, weight: .bold, design: .monospaced))
                 .foregroundColor(.win95Blue)
         }
-        .padding(.vertical, 3)
+        .padding(.vertical, 6)
         .overlay(Divider(), alignment: .bottom)
     }
 }

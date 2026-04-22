@@ -18,7 +18,7 @@ struct PopoverView: View {
                 }
             }
         }
-        .frame(width: 390)
+        .frame(width: 380)
         .background(Color.win95Gray)
     }
 }
@@ -35,6 +35,7 @@ extension Color {
     static let win95Yellow  = Color(red: 1.0,   green: 1.0,   blue: 0.6)    // #ffff99
     static let win95Green   = Color(red: 0.0,   green: 0.667, blue: 0.0)    // #00aa00
     static let terminalGreen = Color(red: 0.0,  green: 1.0,   blue: 0.0)    // #00ff00
+    static let win95Text     = Color(red: 0.188, green: 0.188, blue: 0.188) // #303030
 }
 
 // MARK: - Win95 Window Chrome
@@ -59,16 +60,22 @@ struct Win95Window<Content: View>: View {
                     .font(Font.custom("VT323", size: 15).fallback("Courier New"))
                     .foregroundColor(.white)
                 Spacer()
-                // Decorative window buttons
+                // Window buttons — all close the popover
                 ForEach(["minus", "square", "xmark"], id: \.self) { icon in
-                    ZStack {
-                        Rectangle().fill(Color.win95Gray)
-                            .frame(width: 16, height: 14)
-                            .win95Raised()
-                        Image(systemName: icon)
-                            .font(.system(size: 7, weight: .bold))
-                            .foregroundColor(.black)
+                    Button {
+                        NotificationCenter.default.post(name: .closeAOLFocusPopover, object: nil)
+                    } label: {
+                        ZStack {
+                            Rectangle().fill(Color.win95Gray)
+                                .frame(width: 16, height: 14)
+                                .win95Raised()
+                            Image(systemName: icon)
+                                .font(.system(size: 7, weight: .bold))
+                                .foregroundColor(.black)
+                        }
+                        .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 6)
@@ -152,10 +159,12 @@ struct Win95MenuBar: View {
         } label: {
             Text(title)
                 .font(.system(size: 11))
+                .foregroundColor(.black)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)
         }
         .menuStyle(.borderlessButton)
+        .foregroundColor(.black)
         .fixedSize()
     }
 }
@@ -167,11 +176,19 @@ struct Win95StatusBar: View {
 
     var statusText: String {
         switch session.state {
-        case .idle:         return "Ready"
-        case .connecting:   return "Connecting..."
-        case .active:       return "Session Active · \(session.screenName)"
-        case .paused:       return "Session Paused"
-        case .complete:     return "Session Complete!"
+        case .idle, .connecting: return "Dial Up Internet Simulator"
+        case .active:            return "Session Active · \(session.screenName)"
+        case .paused:            return "Session Paused"
+        case .complete:          return "Session Complete!"
+        }
+    }
+
+    var rightText: String {
+        switch session.state {
+        case .idle, .connecting: return "Ready to Connect"
+        case .active:            return "Connected!"
+        case .paused:            return "Paused"
+        case .complete:          return "Disconnected"
         }
     }
 
@@ -179,11 +196,13 @@ struct Win95StatusBar: View {
         HStack {
             Text(statusText)
                 .font(.system(size: 9))
+                .foregroundColor(.black)
                 .padding(.horizontal, 4)
                 .win95Sunken()
             Spacer()
-            Text("v1.0")
+            Text(rightText)
                 .font(.system(size: 9))
+                .foregroundColor(.black)
                 .padding(.horizontal, 4)
                 .win95Sunken()
         }
@@ -257,9 +276,10 @@ struct Win95Input: View {
         .foregroundColor(.win95Blue)
         .textFieldStyle(.plain)
         .padding(.horizontal, 3)
+        .padding(.bottom, 2)
         .frame(height: 20)
-        .background(Color.white)
-        .win95Sunken()
+        .background(Color(red: 237/255, green: 237/255, blue: 237/255))
+        .overlay(Rectangle().frame(height: 1).foregroundColor(Color(red: 89/255, green: 89/255, blue: 89/255)), alignment: .bottom)
     }
 }
 

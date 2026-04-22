@@ -5,61 +5,66 @@ struct SitesView: View {
     @State private var newSite: String = ""
 
     private let defaultSites = [
-        "reddit.com", "twitter.com", "x.com", "youtube.com",
-        "instagram.com", "facebook.com", "tiktok.com", "twitch.tv",
-        "news.ycombinator.com", "linkedin.com"
+        "Instagram.com", "Facebook.com", "LinkedIn.com",
+        "Reddit.com", "TikTok.com"
     ]
 
     var body: some View {
         VStack(spacing: 8) {
-            Win95Panel(title: "🚫 Manage Blocked Sites") {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Default sites always blocked:")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundColor(.win95Dark)
+            FocusLogoView()
+                .padding(.bottom, 4)
 
-                    // Default sites (read-only)
+            Win95Panel {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Blocked Sites")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.win95Blue)
+
+                    // Always Blocked
+                    Text("Always Blocked:")
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundColor(.win95Text)
+
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 1) {
+                        VStack(alignment: .leading, spacing: 0) {
                             ForEach(defaultSites, id: \.self) { site in
-                                HStack {
-                                    Text("🔒 \(site)")
-                                        .font(.system(size: 10, design: .monospaced))
-                                        .foregroundColor(.win95Dark)
-                                    Spacer()
-                                }
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
+                                Text(site)
+                                    .font(.system(size: 11, design: .monospaced))
+                                    .foregroundColor(.win95Text)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
                             }
                         }
                     }
-                    .frame(height: 80)
-                    .background(Color.white.opacity(0.5))
+                    .frame(height: 100)
+                    .background(Color(red: 237/255, green: 237/255, blue: 237/255))
                     .win95Sunken()
 
-                    Text("Custom blocked sites:")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundColor(.win95Dark)
-                        .padding(.top, 4)
+                    // Custom Blocked
+                    Text("Custom Blocked:")
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundColor(.win95Text)
 
-                    // Custom sites (editable)
                     if session.customBlockedSites.isEmpty {
-                        Text("No custom sites. Add below.")
-                            .font(.system(size: 10, design: .monospaced))
-                            .foregroundColor(.win95Dark)
+                        Text("No additional sites blocked")
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(Color(white: 0.55))
                             .italic()
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(6)
-                            .background(Color.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
+                            .frame(maxWidth: .infinity, minHeight: 70, alignment: .topLeading)
+                            .background(Color(red: 237/255, green: 237/255, blue: 237/255))
                             .win95Sunken()
-                            .frame(height: 50)
                     } else {
                         ScrollView {
-                            VStack(alignment: .leading, spacing: 1) {
+                            VStack(alignment: .leading, spacing: 0) {
                                 ForEach(Array(session.customBlockedSites.enumerated()), id: \.offset) { i, site in
                                     HStack {
                                         Text(site)
-                                            .font(.system(size: 10, design: .monospaced))
+                                            .font(.system(size: 11, design: .monospaced))
+                                            .foregroundColor(.win95Text)
                                         Spacer()
                                         Button {
                                             session.removeCustomSite(at: i)
@@ -73,26 +78,27 @@ struct SitesView: View {
                                         }
                                         .buttonStyle(.plain)
                                     }
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
                                 }
                             }
                         }
-                        .frame(height: 50)
-                        .background(Color.white)
+                        .frame(height: 70)
+                        .background(Color(red: 237/255, green: 237/255, blue: 237/255))
                         .win95Sunken()
                     }
 
-                    // Add site input
-                    HStack(spacing: 4) {
-                        Win95Input(placeholder: "example.com", text: $newSite)
+                    // Add site row
+                    HStack(spacing: 6) {
+                        Win95Input(placeholder: "Example.com", text: $newSite)
                         Button {
                             addSite()
                         } label: {
-                            Text("+ Add")
-                                .font(.system(size: 10, design: .monospaced))
-                                .frame(height: 18)
-                                .padding(.horizontal, 8)
+                            Text("+ ADD")
+                                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                .foregroundColor(.black)
+                                .frame(height: 24)
+                                .padding(.horizontal, 12)
                                 .background(Color.win95Gray)
                                 .win95Raised()
                         }
@@ -102,11 +108,9 @@ struct SitesView: View {
                 }
             }
 
-            HStack(spacing: 4) {
-                Win95Button(title: "◄ Back") {
-                    session.activeScreen = session.state == .active || session.state == .paused
-                        ? .session : .login
-                }
+            Win95Button(title: "◄ BACK") {
+                session.activeScreen = session.state == .active || session.state == .paused
+                    ? .session : .login
             }
         }
         .onSubmit { addSite() }

@@ -21,6 +21,7 @@
 		A1B2C3D4E5F6A7B8C9D0E208 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E209 /* Assets.xcassets */; };
 		A1B2C3D4E5F6A7B8C9D0E20A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E20B /* AVFoundation.framework */; };
 		A1B2C3D4E5F6A7B8C9D0E20C /* AOLFocus.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E20D /* AOLFocus.entitlements */; };
+		B1C2D3E4F5A6B7C8D9E0F1A2 /* youve_got_focus.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A6B7C8D9E0F1A3 /* youve_got_focus.aiff */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		A1B2C3D4E5F6A7B8C9D0E20D /* AOLFocus.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AOLFocus.entitlements; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E20E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E20F /* AOLFocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AOLFocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1C2D3E4F5A6B7C8D9E0F1A3 /* youve_got_focus.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = youve_got_focus.aiff; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				A1B2C3D4E5F6A7B8C9D0E1F9 /* NetworkThrottler.swift */,
 				A1B2C3D4E5F6A7B8C9D0E1FB /* SiteBlocker.swift */,
 				A1B2C3D4E5F6A7B8C9D0E1FD /* SoundEngine.swift */,
+				B1C2D3E4F5A6B7C8D9E0F1A3 /* youve_got_focus.aiff */,
 				A1B2C3D4E5F6A7B8C9D0E20D /* AOLFocus.entitlements */,
 				A1B2C3D4E5F6A7B8C9D0E212 /* Views */,
 				A1B2C3D4E5F6A7B8C9D0E209 /* Assets.xcassets */,
@@ -167,6 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1B2C3D4E5F6A7B8C9D0E208 /* Assets.xcassets in Resources */,
+				B1C2D3E4F5A6B7C8D9E0F1A2 /* youve_got_focus.aiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

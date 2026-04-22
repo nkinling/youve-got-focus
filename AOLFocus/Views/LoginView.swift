@@ -2,48 +2,54 @@ import SwiftUI
 
 struct LoginView: View {
     @EnvironmentObject var session: FocusSession
-    @State private var password: String = ""
+    @State private var password: String = "••••••••••"
 
     var body: some View {
+        if session.activeScreen == .connecting {
+            ConnectingView()
+        } else {
+            loginForm
+        }
+    }
+
+    private var loginForm: some View {
         VStack(spacing: 8) {
-            // Logo
             FocusLogoView()
                 .padding(.bottom, 4)
 
-            // Login panel
             Win95Panel {
-                VStack(alignment: .leading, spacing: 10) {
-                    // Section header
+                VStack(alignment: .leading, spacing: 16) {
                     Text("Sign On")
                         .font(.system(size: 18, weight: .bold))
                         .foregroundColor(.win95Blue)
 
-                    // Screen Name
                     HStack {
                         Text("Screen Name:")
                             .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(.win95Text)
                             .frame(width: 100, alignment: .leading)
                         Win95Input(placeholder: "FocusWarrior99", text: $session.screenName)
                     }
 
-                    // Password (cosmetic)
                     HStack {
                         Text("Password:")
                             .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(.win95Text)
                             .frame(width: 100, alignment: .leading)
                         Win95Input(placeholder: "••••••••", text: $password, isPassword: true)
                     }
 
-                    // Session length
                     HStack(spacing: 4) {
                         Text("Session:")
                             .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(.win95Text)
                             .frame(width: 100, alignment: .leading)
                         Button {
                             if session.sessionMinutes > 5 { session.sessionMinutes -= 5 }
                         } label: {
                             Text("−")
                                 .font(Font.custom("VT323", size: 16).fallback("Courier New"))
+                                .foregroundColor(.black)
                                 .frame(width: 20, height: 20)
                                 .background(Color.win95Gray)
                                 .win95Raised()
@@ -63,6 +69,7 @@ struct LoginView: View {
                         } label: {
                             Text("+")
                                 .font(Font.custom("VT323", size: 16).fallback("Courier New"))
+                                .foregroundColor(.black)
                                 .frame(width: 20, height: 20)
                                 .background(Color.win95Gray)
                                 .win95Raised()
@@ -70,35 +77,30 @@ struct LoginView: View {
                         .buttonStyle(.plain)
                     }
 
-                    // Checkboxes
-                    VStack(alignment: .leading, spacing: 6) {
-                        CheckRow(label: "Enable dial-up slow mode", isOn: $session.slowModeEnabled)
-                        CheckRow(label: "Block distracting sites", isOn: $session.blockSitesEnabled)
-                        CheckRow(label: "Enable sounds", isOn: $session.soundsEnabled)
+                    HStack(spacing: 0) {
+                        Spacer().frame(width: 108)
+                        VStack(alignment: .leading, spacing: 8) {
+                            CheckRow(label: "Enable dial-up slow mode", isOn: $session.slowModeEnabled)
+                            CheckRow(label: "Block distracting sites", isOn: $session.blockSitesEnabled)
+                        }
+                        Spacer()
                     }
                 }
+                .padding(8)
             }
 
-            // Connecting animation (shown mid-dial)
-            if session.activeScreen == .connecting {
-                ConnectingView()
+            Button {
+                startConnection()
+            } label: {
+                Text("SIGN ON")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.win95Blue)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 32)
+                    .background(Color.win95Gray)
+                    .win95Raised()
             }
-
-            // Sign On button
-            if session.activeScreen != .connecting {
-                Button {
-                    startConnection()
-                } label: {
-                    Text("SIGN ON")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(.win95Blue)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 32)
-                        .background(Color.win95Gray)
-                        .win95Raised()
-                }
-                .buttonStyle(.plain)
-            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -108,10 +110,12 @@ struct LoginView: View {
 
         if session.soundsEnabled {
             session.sounds.playDialup {
+                guard session.state == .connecting else { return }
                 session.onConnected()
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                guard session.state == .connecting else { return }
                 session.onConnected()
             }
         }
@@ -122,40 +126,10 @@ struct LoginView: View {
 
 struct FocusLogoView: View {
     var body: some View {
-        VStack(spacing: 4) {
-            // Triangle with globe
-            ZStack {
-                TriangleShape()
-                    .fill(Color.win95Blue)
-                    .frame(width: 90, height: 78)
-                Image(systemName: "globe")
-                    .font(.system(size: 30, weight: .light))
-                    .foregroundColor(.white)
-                    .offset(y: 6)
-            }
-
-            // "YOU'VE GOT" spaced caps
-            Text("Y O U ' V E   G O T")
-                .font(.system(size: 10, weight: .medium))
-                .foregroundColor(.win95Blue)
-                .tracking(1)
-
-            // "Focus" in brush script
-            Text("Focus")
-                .font(Font.custom("Snell Roundhand", size: 48))
-                .foregroundColor(.win95Blue)
-        }
-    }
-}
-
-struct TriangleShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
-        path.closeSubpath()
-        return path
+        Image("Logo")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 148)
     }
 }
 
@@ -163,97 +137,98 @@ struct TriangleShape: Shape {
 
 struct ConnectingView: View {
     @EnvironmentObject var session: FocusSession
-    @State private var progress: Double = 0
-    @State private var progressLabel = "Connecting..."
+    @State private var stage: Int = 0
     @State private var timer: Timer?
 
-    private let allLines = [
-        "ATDT 1-800-AOL-FOCUS",
-        "CONNECT 56000",
-        "~~~ATH0~~~ CARRIER DETECTED",
-        "Verifying username...",
-        "Loading Focus Module v5.0...",
-        "Initializing Slow Mode™...",
-        "Blocking distractions...",
-        "YOU'VE GOT MINUTES!"
-    ]
-
-    private let stages = [
-        "Initializing modem...", "Dialing...", "Handshaking...",
-        "Authenticating...", "Loading Focus...", "Almost there...", "Connected!"
-    ]
-
-    var body: some View {
-        VStack(spacing: 6) {
-            Text("📞 Dialing AOL Focus...")
-                .font(Font.custom("VT323", size: 18).fallback("Courier New"))
-                .foregroundColor(.win95Blue)
-
-            // Modem terminal
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 2) {
-                        ForEach(Array(session.connectingLines.enumerated()), id: \.offset) { idx, line in
-                            Text(line)
-                                .font(.system(size: 10, design: .monospaced))
-                                .foregroundColor(.terminalGreen)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .id(idx)
-                        }
-                    }
-                    .padding(6)
-                    .frame(maxWidth: .infinity)
-                }
-                .frame(height: 80)
-                .background(Color.black)
-                .win95Sunken()
-                .onChange(of: session.connectingLines.count) { count in
-                    withAnimation { proxy.scrollTo(count - 1, anchor: .bottom) }
-                }
-            }
-
-            // Progress bar
-            ZStack(alignment: .leading) {
-                Rectangle().fill(Color.white).frame(height: 16).win95Sunken()
-                Rectangle().fill(Color.win95Blue)
-                    .frame(width: max(0, progress / 100.0 * 358), height: 16)
-                    .animation(.linear(duration: 0.3), value: progress)
-                Text(progressLabel)
-                    .font(.system(size: 10, design: .monospaced))
-                    .foregroundColor(.white)
-                    .blendMode(.difference)
-                    .frame(maxWidth: .infinity)
-            }
+    private var stageLabel: String {
+        switch stage {
+        case 0: return "Dialing..."
+        case 1: return "Connecting..."
+        default: return "Connected!"
         }
-        .onAppear { startProgress() }
-        .onDisappear { stopProgress() }
     }
 
-    private func startProgress() {
-        progress = 0
-        session.connectingLines = [allLines[0]]
+    var body: some View {
+        VStack(spacing: 8) {
+            FocusLogoView()
+                .padding(.bottom, 4)
 
-        var step = 0
-        let t = Timer(timeInterval: 0.42, repeats: true) { t in
-            step += 1
-            let newProgress = min(100, Double(step) * 14.0)
-            progress = newProgress
-            let stageIdx = min(Int(newProgress / 15.0), stages.count - 1)
-            progressLabel = stages[stageIdx]
+            Win95Panel {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(stageLabel)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(.win95Blue)
 
-            if step < allLines.count {
-                session.connectingLines.append(allLines[step])
+                    HStack(spacing: 16) {
+                        BuddyBox(asset: "BuddyStage1", showIcon: true)
+                        BuddyBox(asset: "BuddyStage2", showIcon: stage >= 1)
+                        BuddyBox(asset: "BuddyStage3", showIcon: stage >= 2, iconHeight: 68)
+                    }
+
+                    Text("Dial up, slow down, and stay focused")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundColor(.win95Text)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
             }
 
-            if progress >= 100 { t.invalidate() }
+            Button {
+                session.signOff()
+            } label: {
+                Text("CANCEL")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.win95Blue)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 28)
+                    .background(Color.win95Gray)
+                    .win95Raised()
+            }
+            .buttonStyle(.plain)
+        }
+        .onAppear { startAnimation() }
+        .onDisappear { timer?.invalidate(); timer = nil }
+    }
+
+    private func startAnimation() {
+        stage = 0
+        var tick = 0
+        let t = Timer(timeInterval: 1.1, repeats: true) { [weak session] t in
+            tick += 1
+            withAnimation(.easeIn(duration: 0.2)) { stage = tick }
+            if tick == 2 {
+                // 3rd buddy appears — play "You've Got Focus"
+                if session?.soundsEnabled == true {
+                    session?.sounds.playYouveGotFocus()
+                }
+                t.invalidate()
+            }
         }
         RunLoop.main.add(t, forMode: .common)
         timer = t
     }
+}
 
-    private func stopProgress() {
-        timer?.invalidate()
-        timer = nil
+// MARK: - Buddy icon box
+
+struct BuddyBox: View {
+    let asset: String
+    let showIcon: Bool
+    var iconHeight: CGFloat = 60
+
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .fill(Color(red: 237/255, green: 237/255, blue: 237/255))
+                .win95Sunken()
+
+            if showIcon {
+                Image(asset)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: iconHeight)
+            }
+        }
+        .frame(width: 108, height: 108)
     }
 }
 
@@ -269,7 +244,13 @@ struct CheckRow: View {
                 isOn.toggle()
             } label: {
                 ZStack {
-                    Rectangle().fill(Color.white).frame(width: 13, height: 13).win95Sunken()
+                    Rectangle()
+                        .fill(Color(red: 237/255, green: 237/255, blue: 237/255))
+                        .frame(width: 13, height: 13)
+                        .overlay(
+                            Rectangle()
+                                .stroke(Color(red: 89/255, green: 89/255, blue: 89/255), lineWidth: 1)
+                        )
                     if isOn {
                         Text("✓")
                             .font(.system(size: 10, weight: .bold))
@@ -281,6 +262,7 @@ struct CheckRow: View {
 
             Text(label)
                 .font(.system(size: 11, design: .monospaced))
+                .foregroundColor(.win95Text)
                 .onTapGesture { isOn.toggle() }
         }
     }

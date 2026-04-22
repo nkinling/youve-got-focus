@@ -30,6 +30,7 @@ class FocusSession: ObservableObject {
     // Stats
     @Published var sessionsCompleted: Int = 0
     @Published var totalFocusSeconds: Int = 0
+    @Published var focusStreak: Int = 0
 
     private var timer: Timer?
     private var lastTickDate: Date?
@@ -115,6 +116,7 @@ class FocusSession: ObservableObject {
         if focused > 30 {
             sessionsCompleted += 1
             totalFocusSeconds += focused
+            updateStreak()
             saveStats()
         }
 
@@ -222,18 +224,37 @@ class FocusSession: ObservableObject {
     }
 
     private func loadStats() {
-        sessionsCompleted  = UserDefaults.standard.integer(forKey: "statsSessionsCompleted")
-        totalFocusSeconds  = UserDefaults.standard.integer(forKey: "statsTotalFocusSeconds")
+        sessionsCompleted = UserDefaults.standard.integer(forKey: "statsSessionsCompleted")
+        totalFocusSeconds = UserDefaults.standard.integer(forKey: "statsTotalFocusSeconds")
+        focusStreak       = UserDefaults.standard.integer(forKey: "statsFocusStreak")
     }
 
     private func saveStats() {
-        UserDefaults.standard.set(sessionsCompleted,  forKey: "statsSessionsCompleted")
-        UserDefaults.standard.set(totalFocusSeconds,  forKey: "statsTotalFocusSeconds")
+        UserDefaults.standard.set(sessionsCompleted, forKey: "statsSessionsCompleted")
+        UserDefaults.standard.set(totalFocusSeconds, forKey: "statsTotalFocusSeconds")
+        UserDefaults.standard.set(focusStreak,       forKey: "statsFocusStreak")
+    }
+
+    private func updateStreak() {
+        let defaults = UserDefaults.standard
+        let today = Calendar.current.startOfDay(for: Date())
+        if let last = defaults.object(forKey: "statsLastCompletedDate") as? Date {
+            let lastDay = Calendar.current.startOfDay(for: last)
+            let diff = Calendar.current.dateComponents([.day], from: lastDay, to: today).day ?? 0
+            if diff == 1 { focusStreak += 1 }
+            else if diff > 1 { focusStreak = 1 }
+            // diff == 0 means same day: keep current streak
+        } else {
+            focusStreak = 1
+        }
+        defaults.set(Date(), forKey: "statsLastCompletedDate")
     }
 
     func clearStats() {
         sessionsCompleted = 0
         totalFocusSeconds = 0
+        focusStreak       = 0
+        UserDefaults.standard.removeObject(forKey: "statsLastCompletedDate")
         saveStats()
     }
 

@@ -2,7 +2,7 @@ import AVFoundation
 
 /// Procedurally generates dial-up modem sounds using AVAudioEngine.
 /// No audio files needed — pure synthesis.
-class SoundEngine {
+class SoundEngine: NSObject {
 
     private let engine = AVAudioEngine()
     private let playerNode = AVAudioPlayerNode()
@@ -10,6 +10,9 @@ class SoundEngine {
 
     // Stored after engine connects so all buffers use the exact same format
     private var playFormat: AVAudioFormat?
+
+    // File-based player for "You've Got Focus" voice clip
+    private var voicePlayer: AVAudioPlayer?
 
     // Pre-baked buffers
     private var dialupBuffer: AVAudioPCMBuffer?
@@ -21,7 +24,8 @@ class SoundEngine {
     // Serial queue — ALL engine and buffer ops run here, no races
     private let audioQueue = DispatchQueue(label: "com.aolfocus.audio", qos: .userInitiated)
 
-    init() {
+    override init() {
+        super.init()
         audioQueue.async { [weak self] in
             self?.setupEngine()
         }
@@ -94,6 +98,20 @@ class SoundEngine {
         audioQueue.async { [weak self] in
             guard let self, let buf = self.busyBuffer else { return }
             self.scheduleAndPlay(buf)
+        }
+    }
+
+    func playYouveGotFocus() {
+        audioQueue.async { [weak self] in
+            guard let self else { return }
+            // Stop any in-progress synthesis (dial-up noise) before the voice plays
+            self.playerNode.stop()
+            guard let url = Bundle.main.url(forResource: "youve_got_focus", withExtension: "aiff") else { return }
+            DispatchQueue.main.async {
+                self.voicePlayer = try? AVAudioPlayer(contentsOf: url)
+                self.voicePlayer?.volume = 0.95
+                self.voicePlayer?.play()
+            }
         }
     }
 

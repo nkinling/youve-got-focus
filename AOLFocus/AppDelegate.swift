@@ -2,6 +2,10 @@ import AppKit
 import SwiftUI
 import Combine
 
+extension Notification.Name {
+    static let closeAOLFocusPopover = Notification.Name("closeAOLFocusPopover")
+}
+
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var popover: NSPopover!
@@ -20,6 +24,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if self?.popover.isShown == true {
                 self?.closePopover()
             }
+        }
+
+        // Close popover from SwiftUI title bar buttons
+        NotificationCenter.default.addObserver(forName: .closeAOLFocusPopover, object: nil, queue: .main) { [weak self] _ in
+            self?.closePopover()
         }
     }
 
@@ -62,7 +71,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func setupPopover() {
         popover = NSPopover()
-        popover.contentSize = NSSize(width: 390, height: 520)
+        popover.contentSize = NSSize(width: 380, height: 520)
         popover.behavior = .transient
         popover.animates = true
         popover.contentViewController = NSHostingController(
@@ -85,7 +94,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
     }
 
-    private func closePopover() {
-        popover.performClose(nil)
+    func closePopover() {
+        popover.close()
     }
 }

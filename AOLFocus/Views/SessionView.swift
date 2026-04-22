@@ -85,7 +85,7 @@ struct SessionView: View {
                     session.activeScreen = .stats
                 }
                 Win95Button(title: "🚪 Sign Off", danger: true) {
-                    confirmSignOff()
+                    session.signOff()
                 }
             }
         }
@@ -116,16 +116,6 @@ struct SessionView: View {
         }
     }
 
-    private func confirmSignOff() {
-        let alert = NSAlert()
-        alert.messageText = "Sign Off AOL Focus?"
-        alert.informativeText = "Your session will end early."
-        alert.addButton(withTitle: "Sign Off")
-        alert.addButton(withTitle: "Cancel")
-        if alert.runModal() == .alertFirstButtonReturn {
-            session.signOff()
-        }
-    }
 }
 
 // MARK: - Animated Speed Bar
