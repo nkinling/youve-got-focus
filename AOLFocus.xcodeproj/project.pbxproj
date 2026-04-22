@@ -42,6 +42,7 @@
 		A1B2C3D4E5F6A7B8C9D0E20E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E20F /* AOLFocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AOLFocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1C2D3E4F5A6B7C8D9E0F1A3 /* youve_got_focus.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = youve_got_focus.aiff; sourceTree = "<group>"; };
+		C2D3E4F5A6B7C8D9E0F1A2B3 /* MenuBarIcon.svg */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.svg"; path = MenuBarIcon.svg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

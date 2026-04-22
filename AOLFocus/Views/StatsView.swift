@@ -13,7 +13,7 @@ struct StatsView: View {
             Win95Panel {
                 VStack(spacing: 0) {
                     Text("Statistics")
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.system(size: 14, weight: .bold))
                         .foregroundColor(.win95Blue)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, 10)

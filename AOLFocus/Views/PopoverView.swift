@@ -53,11 +53,15 @@ struct Win95Window<Content: View>: View {
         VStack(spacing: 0) {
             // Title bar
             HStack {
-                Image(systemName: "globe")
+                Image("MenuBarIcon")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
                     .foregroundColor(.white)
-                    .font(.system(size: 12))
+                    .frame(height: 12)
+                    .padding(.leading, 8)
                 Text(title)
-                    .font(Font.custom("VT323", size: 15).fallback("Courier New"))
+                    .font(Font.custom("VT323", size: 14).fallback("Courier New"))
                     .foregroundColor(.white)
                 Spacer()
                 // Window buttons — all close the popover
@@ -67,7 +71,7 @@ struct Win95Window<Content: View>: View {
                     } label: {
                         ZStack {
                             Rectangle().fill(Color.win95Gray)
-                                .frame(width: 16, height: 14)
+                                .frame(width: 16, height: 16)
                                 .win95Raised()
                             Image(systemName: icon)
                                 .font(.system(size: 7, weight: .bold))
@@ -78,8 +82,9 @@ struct Win95Window<Content: View>: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(.horizontal, 6)
-            .padding(.vertical, 3)
+            .padding(.leading, 3)
+            .padding(.trailing, 6)
+            .padding(.vertical, 6)
             .background(
                 LinearGradient(colors: [.win95Blue, .win95LtBlue],
                                startPoint: .leading, endPoint: .trailing)
@@ -92,7 +97,7 @@ struct Win95Window<Content: View>: View {
             VStack(spacing: 0) {
                 content
             }
-            .padding(8)
+            .padding(4)
 
             // Status bar
             Win95StatusBar()
@@ -145,7 +150,9 @@ struct Win95MenuBar: View {
         .frame(height: 22)
         .background(Color.win95Gray)
         .overlay(Divider().foregroundColor(.win95Dark), alignment: .bottom)
+        .padding(.horizontal, 6)
     }
+
 
     private func menuItem(_ title: String, menu: [(String, () -> Void)]) -> some View {
         Menu {
@@ -179,7 +186,7 @@ struct Win95StatusBar: View {
         case .idle, .connecting: return "Dial Up Internet Simulator"
         case .active:            return "Session Active · \(session.screenName)"
         case .paused:            return "Session Paused"
-        case .complete:          return "Session Complete!"
+        case .complete:          return "Session Complete"
         }
     }
 
@@ -198,16 +205,19 @@ struct Win95StatusBar: View {
                 .font(.system(size: 9))
                 .foregroundColor(.black)
                 .padding(.horizontal, 4)
+                .padding(.vertical, 2)
                 .win95Sunken()
             Spacer()
             Text(rightText)
                 .font(.system(size: 9))
                 .foregroundColor(.black)
                 .padding(.horizontal, 4)
+                .padding(.vertical, 2)
                 .win95Sunken()
         }
-        .padding(.horizontal, 6)
-        .padding(.vertical, 2)
+        .padding(.horizontal, 8)
+        .padding(.bottom, 8)
+        .padding(.top, 4)
         .background(Color.win95Gray)
     }
 }
@@ -236,7 +246,7 @@ struct Win95Panel<Content: View>: View {
         }
         .padding(8)
         .background(Color.white)
-        .win95Sunken()
+        .win95Raised()
     }
 }
 
@@ -248,7 +258,7 @@ struct Win95Button: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: 10, design: .monospaced))
+                .font(.system(size: 14, weight: .bold))
                 .foregroundColor(danger ? .win95Red : .black)
                 .frame(maxWidth: .infinity)
                 .frame(height: 24)
@@ -275,7 +285,7 @@ struct Win95Input: View {
         .font(.system(size: 11, design: .monospaced))
         .foregroundColor(.win95Blue)
         .textFieldStyle(.plain)
-        .padding(.horizontal, 3)
+        .padding(.horizontal, 4)
         .padding(.bottom, 2)
         .frame(height: 20)
         .background(Color(red: 237/255, green: 237/255, blue: 237/255))

@@ -93,6 +93,7 @@ class FocusSession: ObservableObject {
         guard state == .active else { return }
         state = .paused
         stopTimer()
+        throttler.disableThrottling()
         saveSessionState()
     }
 
@@ -101,10 +102,12 @@ class FocusSession: ObservableObject {
         state = .active
         lastTickDate = Date()
         saveSessionState()
+        if slowModeEnabled { throttler.enableThrottling() }
         startTimer()
     }
 
     func signOff() {
+        sounds.stopAll()
         endSession(completed: false)
         activeScreen = .login
     }

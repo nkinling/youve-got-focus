@@ -5,8 +5,10 @@ struct SitesView: View {
     @State private var newSite: String = ""
 
     private let defaultSites = [
-        "Instagram.com", "Facebook.com", "LinkedIn.com",
-        "Reddit.com", "TikTok.com"
+        "Disney+", "Facebook", "Hulu",
+        "Instagram", "LinkedIn", "Netflix",
+        "Pinterest", "Reddit", "TikTok",
+        "Twitch", "X (Twitter)", "YouTube"
     ]
 
     var body: some View {
@@ -17,7 +19,7 @@ struct SitesView: View {
             Win95Panel {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Blocked Sites")
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.system(size: 14, weight: .bold))
                         .foregroundColor(.win95Blue)
 
                     // Always Blocked
@@ -37,17 +39,17 @@ struct SitesView: View {
                             }
                         }
                     }
-                    .frame(height: 100)
+                    .frame(height: 106)
                     .background(Color(red: 237/255, green: 237/255, blue: 237/255))
                     .win95Sunken()
 
                     // Custom Blocked
-                    Text("Custom Blocked:")
+                    Text("Also Blocked:")
                         .font(.system(size: 11, design: .monospaced))
                         .foregroundColor(.win95Text)
 
                     if session.customBlockedSites.isEmpty {
-                        Text("No additional sites blocked")
+                        Text("No sites added")
                             .font(.system(size: 11, design: .monospaced))
                             .foregroundColor(Color(white: 0.55))
                             .italic()
@@ -79,7 +81,7 @@ struct SitesView: View {
                                         .buttonStyle(.plain)
                                     }
                                     .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
+                                    .padding(.vertical, 8)
                                 }
                             }
                         }
@@ -97,7 +99,7 @@ struct SitesView: View {
                             Text("+ ADD")
                                 .font(.system(size: 11, weight: .bold, design: .monospaced))
                                 .foregroundColor(.black)
-                                .frame(height: 24)
+                                .frame(height: 20)
                                 .padding(.horizontal, 12)
                                 .background(Color.win95Gray)
                                 .win95Raised()

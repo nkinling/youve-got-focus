@@ -36,35 +36,46 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         guard let button = statusItem.button else { return }
 
-        button.title = "🌐"
-        button.font = NSFont.systemFont(ofSize: 14)
-        button.toolTip = "AOL Focus — You've Got Minutes!"
+        button.toolTip = "You've Got Focus"
         button.action = #selector(togglePopover)
         button.target = self
+        setMenuBarIcon(button: button)
 
         // Update button on every tick — show live countdown when active
         Publishers.CombineLatest(session.$state, session.$remainingSeconds)
             .receive(on: RunLoop.main)
             .sink { [weak self, weak button] state, remaining in
-                guard let button else { return }
+                guard let self, let button else { return }
                 switch state {
                 case .active:
                     let mins = remaining / 60
                     let secs = remaining % 60
+                    button.image = nil
                     button.title = String(format: "📞 %d:%02d", mins, secs)
                     button.font = NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .medium)
                 case .paused:
                     let mins = remaining / 60
                     let secs = remaining % 60
+                    button.image = nil
                     button.title = String(format: "⏸ %d:%02d", mins, secs)
                     button.font = NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .medium)
                 default:
-                    button.title = "🌐"
-                    button.font = NSFont.systemFont(ofSize: 14)
+                    button.title = ""
+                    self.setMenuBarIcon(button: button)
                 }
-                // Let the status item resize to fit the new title
-                self?.statusItem.length = NSStatusItem.variableLength
+                self.statusItem.length = NSStatusItem.variableLength
             }.store(in: &cancellables)
+    }
+
+    private func setMenuBarIcon(button: NSStatusBarButton) {
+        if let img = NSImage(named: "MenuBarIcon") {
+            img.isTemplate = true
+            img.size = NSSize(width: 18, height: 15)
+            button.image = img
+            button.imagePosition = .imageOnly
+        } else {
+            button.title = "🌐"
+        }
     }
 
     private var cancellables: Set<AnyCancellable> = []
@@ -91,7 +102,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func openPopover() {
         guard let button = statusItem.button else { return }
         NSApp.activate(ignoringOtherApps: true)
-        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        // Anchor to the horizontal center of the button so the popover
+        // doesn't shift left/right as the timer text changes width
+        let center = CGRect(
+            x: button.bounds.midX - 1,
+            y: button.bounds.minY,
+            width: 2,
+            height: button.bounds.height
+        )
+        popover.show(relativeTo: center, of: button, preferredEdge: .minY)
     }
 
     func closePopover() {

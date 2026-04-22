@@ -115,6 +115,16 @@ class SoundEngine: NSObject {
         }
     }
 
+    func stopAll() {
+        audioQueue.async { [weak self] in
+            self?.playerNode.stop()
+        }
+        DispatchQueue.main.async { [weak self] in
+            self?.voicePlayer?.stop()
+            self?.voicePlayer = nil
+        }
+    }
+
     // MARK: - scheduleAndPlay (audioQueue only)
 
     private func scheduleAndPlay(_ buffer: AVAudioPCMBuffer) {

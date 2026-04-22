@@ -1,8 +1,21 @@
 import SwiftUI
+import AppKit
 
 struct LoginView: View {
     @EnvironmentObject var session: FocusSession
     @State private var password: String = "••••••••••"
+
+    private static let screenNames = [
+        "FocusWarrior99",   "DeepWorkDave",      "InTheZone2000",
+        "NoRedditRandy",    "PomodoroPrince",     "FlowStateFrank",
+        "DistractedNoMore", "ZenCoder42",         "TaskCrusher99",
+        "DeepWorkDenise",   "MonkModeMax",        "GetItDone2000",
+        "TabCloser9000",    "SlowInternetSam",    "FocusPower99",
+        "SingleTaskSteve",  "OfflineOliver",      "NotifsOff99",
+        "GrindModeMike",    "CalendarClearer",    "InboxZeroZach",
+        "ShallowWorkEnemy", "TheFlowMaster",      "DeepThinkTina",
+        "NoMemesMarcus",    "WorkHardWendy",      "LaserFocusLou",
+    ]
 
     var body: some View {
         if session.activeScreen == .connecting {
@@ -20,7 +33,7 @@ struct LoginView: View {
             Win95Panel {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Sign On")
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.system(size: 14, weight: .bold))
                         .foregroundColor(.win95Blue)
 
                     HStack {
@@ -59,6 +72,7 @@ struct LoginView: View {
                         Text("\(session.sessionMinutes)")
                             .font(Font.custom("VT323", size: 16).fallback("Courier New"))
                             .foregroundColor(.win95Blue)
+                            .padding(.top, 3)
                             .frame(width: 44, height: 20)
                             .background(Color.white)
                             .win95Sunken()
@@ -93,7 +107,7 @@ struct LoginView: View {
                 startConnection()
             } label: {
                 Text("SIGN ON")
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.win95Blue)
                     .frame(maxWidth: .infinity)
                     .frame(height: 32)
@@ -101,6 +115,13 @@ struct LoginView: View {
                     .win95Raised()
             }
             .buttonStyle(.plain)
+        }
+        .onAppear {
+            session.screenName = Self.screenNames.randomElement() ?? "FocusWarrior99"
+            // Prevent the text field from stealing focus on open
+            DispatchQueue.main.async {
+                NSApp.keyWindow?.makeFirstResponder(nil)
+            }
         }
     }
 
@@ -129,7 +150,7 @@ struct FocusLogoView: View {
         Image("Logo")
             .resizable()
             .scaledToFit()
-            .frame(width: 148)
+            .frame(height: 120)
     }
 }
 
@@ -154,22 +175,25 @@ struct ConnectingView: View {
                 .padding(.bottom, 4)
 
             Win95Panel {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(spacing: 12) {
                     Text(stageLabel)
-                        .font(.system(size: 13, weight: .bold))
+                        .font(.system(size: 14, weight: .bold))
                         .foregroundColor(.win95Blue)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
                     HStack(spacing: 16) {
                         BuddyBox(asset: "BuddyStage1", showIcon: true)
                         BuddyBox(asset: "BuddyStage2", showIcon: stage >= 1)
                         BuddyBox(asset: "BuddyStage3", showIcon: stage >= 2, iconHeight: 68)
                     }
+                    .frame(maxWidth: .infinity)
 
                     Text("Dial up, slow down, and stay focused")
                         .font(.system(size: 10, design: .monospaced))
                         .foregroundColor(.win95Text)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
+                .padding(8)
             }
 
             Button {
@@ -179,7 +203,7 @@ struct ConnectingView: View {
                     .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.win95Blue)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 28)
+                    .frame(height: 32)
                     .background(Color.win95Gray)
                     .win95Raised()
             }
@@ -228,7 +252,8 @@ struct BuddyBox: View {
                     .frame(height: iconHeight)
             }
         }
-        .frame(width: 108, height: 108)
+        .frame(maxWidth: .infinity)
+        .aspectRatio(1, contentMode: .fit)
     }
 }
 
