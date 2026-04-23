@@ -15,6 +15,8 @@ struct PopoverView: View {
                     StatsView()
                 case .sites:
                     SitesView()
+                case .about:
+                    AboutView()
                 }
             }
         }
@@ -137,14 +139,16 @@ struct Win95MenuBar: View {
                     session.savePreferences()
                 })
             ])
-            menuItem("Help", menu: [
-                ("About AOL Focus", {
-                    let alert = NSAlert()
-                    alert.messageText = "AOL Focus v5.0"
-                    alert.informativeText = "Dial-up era Pomodoro timer.\nLog in. Slow down. Get work done.\n\n28.8 kbps of pure productivity."
-                    alert.runModal()
-                })
-            ])
+            Button {
+                session.activeScreen = .about
+            } label: {
+                Text("About")
+                    .font(.system(size: 11))
+                    .foregroundColor(.black)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+            }
+            .buttonStyle(.plain)
             Spacer()
         }
         .frame(height: 22)

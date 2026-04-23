@@ -10,7 +10,7 @@ enum SessionState: Equatable {
 }
 
 enum ActiveScreen {
-    case login, connecting, session, stats, sites
+    case login, connecting, session, stats, sites, about
 }
 
 class FocusSession: ObservableObject {
