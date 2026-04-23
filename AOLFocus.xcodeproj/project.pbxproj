@@ -18,7 +18,7 @@
 		A1B2C3D4E5F6A7B8C9D0E202 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E203 /* SessionView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E204 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E205 /* StatsView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E206 /* SitesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E207 /* SitesView.swift */; };
-		C2D3E4F5A6B7C8D9E0F1A2B3 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D3E4F5A6B7C8D9E0F1A2B4 /* AboutView.swift */; };
+		F5A6B7C8D9E0F1A2B3C4D5E6 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D3E4F5A6B7C8D9E0F1A2B4 /* AboutView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E208 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E209 /* Assets.xcassets */; };
 		A1B2C3D4E5F6A7B8C9D0E20A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E20B /* AVFoundation.framework */; };
 		A1B2C3D4E5F6A7B8C9D0E20C /* AOLFocus.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E20D /* AOLFocus.entitlements */; };
@@ -196,7 +196,7 @@
 				A1B2C3D4E5F6A7B8C9D0E202 /* SessionView.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E204 /* StatsView.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E206 /* SitesView.swift in Sources */,
-				C2D3E4F5A6B7C8D9E0F1A2B3 /* AboutView.swift in Sources */,
+				F5A6B7C8D9E0F1A2B3C4D5E6 /* AboutView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
