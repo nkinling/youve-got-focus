@@ -7,10 +7,10 @@ struct AboutView: View {
     private let body1 = """
 You've Got Focus is a nostalgic productivity \
 timer inspired by the dial-up days of the \
-1990s.
+90s internet era.
 """
     private let body2 = """
-It recreates the feel of a 56 kbps internet \
+It recreates the slog of a 56 kbps internet \
 connection, intentionally slowing your \
 browser to cut through the noise and keep \
 you focused.
@@ -23,7 +23,7 @@ you focused.
                 .padding(.bottom, 4)
 
             Win95Panel {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 16) {
                     Text("About")
                         .font(.system(size: 14, weight: .bold))
                         .foregroundColor(.win95Blue)
