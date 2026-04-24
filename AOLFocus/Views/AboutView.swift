@@ -30,20 +30,21 @@ you focused.
 
                     VStack(alignment: .leading, spacing: 10) {
                         Text(body1)
-                            .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 11, design: .monospaced))
                             .foregroundColor(.win95Text)
                             .fixedSize(horizontal: false, vertical: true)
 
                         Text(body2)
-                            .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 11, design: .monospaced))
                             .foregroundColor(.win95Text)
                             .fixedSize(horizontal: false, vertical: true)
 
                         Text(body3)
-                            .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 11, design: .monospaced))
                             .foregroundColor(.win95Text)
                     }
                 }
+                .padding(8)
             }
 
             HStack(spacing: 8) {
